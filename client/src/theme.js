@@ -13,7 +13,7 @@ export const theme = createTheme({
     focus: "#212121"
   },
   typography: {
-    fontFamily: "Helvetica",
+    fontFamily: "Myriad Pro Cond Black",
   },
   shape: {
     borderRadius: 20,

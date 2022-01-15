@@ -1,6 +1,6 @@
 import { AppBar, Toolbar } from "@mui/material";
 // Internal imports
-import NikeLogo from "../assets/nike-logo-bar.png";
+import NikeLogo from "../../assets/nike-logo-bar.png";
 
 const styles = {
   logo: {

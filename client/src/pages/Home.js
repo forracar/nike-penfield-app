@@ -1,9 +1,13 @@
 // External imports
 import React from "react";
 // Internal imports
-import NavBar from '../components/navbar';
+import NavBar from '../components/commons/navbar';
 import Form from "../components/form";
 
+/**
+ * Home layout. Main page
+ *
+ */
 function Home() {
   return (
     <React.Fragment>
