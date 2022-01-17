@@ -1,18 +1,20 @@
-// Init server
 const express = require('express');
+const cors = require('cors');
+
+// Init
 const app = express();
-const port = 5000;
+const PORT = process.env.PORT || 5000;
 
-// Init server
-app.listen(port, () => {
-  console.log('Example app listening at http://localhost:5000');
-})
+// Database
+require('./db').connect();
 
-// Init mongo
-require('./mongodb').connect();
+// Middlewares
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-//Init routes
+// Routes
 require('./routes/mongo')(app);
 require('./routes/marketingcloud')(app);
 
-module.exports = app;
+app.listen(PORT, () => console.log(`Server is running at port ${PORT}`));

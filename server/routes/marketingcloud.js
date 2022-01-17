@@ -1,8 +1,9 @@
 const axios = require("axios");
 const marketingcloudconfig = require("../config/marketingcloud-config");
+const authMiddleware = require("../middleware/auth");
 
 module.exports = (app) => {
-  app.get("/marketingcloud/get/token", (req, res) => {
+  app.post("/marketingcloud/post/token", authMiddleware, (req, res) => {
     axios
       .post(
         marketingcloudconfig.authURI + marketingcloudconfig.endpoints.token,
@@ -22,14 +23,14 @@ module.exports = (app) => {
       });
   });
 
-  app.post("/marketingcloud/post/interactionevent", (req, res) => {
+  app.post("/marketingcloud/post/interactionevent", authMiddleware, (req, res) => {
     axios
       .post(
         marketingcloudconfig.baseURI + marketingcloudconfig.endpoints.fireEvent,
         {
           ContactKey: marketingcloudconfig.events.contactKey,
           EventDefinitionKey: marketingcloudconfig.events.eventDefinitionKey,
-          // TODO: (Optional) properties of the event, when the event if defined pass data set in front-end
+          // TODO: (Optional) properties of the event, when the event is defined pass custom data
           Data: {},
         }
       )

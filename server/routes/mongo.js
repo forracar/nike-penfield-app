@@ -1,9 +1,11 @@
 const mongoose = require("mongoose");
+const authMiddleware = require("../middleware/auth");
 const contactSchema = require("../models/contactmodel");
 const ContactModel = mongoose.model("ContactModel", contactSchema);
+const {generateVoucherCode} = require('../utils')
 
 module.exports = (app) => {
-  app.get("/mongo/get/vouchercode", (req, res) => {
+  app.get("/mongo/get/vouchercode", authMiddleware, (req, res) => {
     ContactModel.findOne({ "user.vouchercode": req.query.vouchercode }).then(
       (response) => {
         // TODO: Check if it's found or not
@@ -15,14 +17,20 @@ module.exports = (app) => {
     );
   });
 
-  app.post("/mongo/post/contactdata", (req, res) => {
-    // TODO: POST CONTACT DATA TO MONGODB
-    //
-    // 1. Get if user name is already registered
-    //   1.1 If user is already registered don't send vouchercode and
-    //   return
-    // 2. User dosn't exist
-    //    2.1 Generate vouchercode
-    //    2.2 Post mongodb data
+  app.post("/mongo/post/contactdata", authMiddleware, (req, res) => {
+    // TODO: Check if contact already submit survey
+    // otherwise generate code and create document in mongodb
+    const surveyData = req.params.survey;
+    const contactData = req.params.contactdata;
+    
+    contactData.vouchercode = generateVoucherCode();
+
+    ContactModel.create({survey: surveyData, contact: contactData}).then((response) => {
+      console.log("[MONGO] Contact Model create documment SUCCESS: ", response);
+      res.send(response);
+    }).catch((error) => {
+      console.log("[MONGO] Contact Model ERROR at creating document: ", error);
+      res.send(error);
+    })
   });
 };
