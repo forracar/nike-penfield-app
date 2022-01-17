@@ -60,7 +60,7 @@ const PersonalInfoForm = ({
       />
       <TextField
         required
-        type="text"
+        type="number"
         name="mobilenumber"
         label="Mobile number"
         value={personalInfoValues.mobilenumber}
