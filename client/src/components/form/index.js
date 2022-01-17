@@ -1,20 +1,20 @@
 // External imports
-import React, {useEffect, useState} from "react";
-import { CardContent, Card} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { CardContent, Card } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 // Internal imports
-import { getMarketingCloudToken } from "../../api"; 
 import CardFormHeader from "./card-form-header";
 import CardFormBody from "./card-form-body";
 import CardFormFooter from "./card-form-footer";
-import { postUserData, fireJourney } from "../../api";
+import { postContactData, fireJourney } from "../../api";
+import {validateMarketingCloudToken} from "../../utils";
 
 // Styles definition
 const useStyles = makeStyles({
   root: {
     marginTop: 20,
-    marginLeft: 'auto',
-    marginRight: 'auto',
+    marginLeft: "auto",
+    marginRight: "auto",
     marginBottom: 20,
     border: 0,
 
@@ -24,8 +24,8 @@ const useStyles = makeStyles({
     height: "auto",
     padding: "0 30px",
     width: "50%",
-    minWidth: '450px'
-  }
+    minWidth: "450px",
+  },
 });
 
 /**
@@ -37,11 +37,24 @@ function Form() {
 
   const [step, setStep] = useState(0);
 
-  const initialSurveyValues = {question: '', visit: '', findstore: undefined, suggestions: ''};
-  const initialPersonalInfoValues = {email: '', firstname:'', secondname:'', mobilenumber: '', subscriber: false};
+  const initialSurveyValues = {
+    question: "",
+    visit: "",
+    findstore: undefined,
+    suggestions: "",
+  };
+  const initialPersonalInfoValues = {
+    email: "",
+    firstname: "",
+    secondname: "",
+    mobilenumber: "",
+    subscriber: false,
+  };
 
   const [surveyValues, setSurveyValues] = useState(initialSurveyValues);
-  const [personalInfoValues, setPersonalInfoValues] = useState(initialPersonalInfoValues);
+  const [personalInfoValues, setPersonalInfoValues] = useState(
+    initialPersonalInfoValues
+  );
 
   const [personalInfoErrors, setPersonalInfoErrors] = useState({});
   const [surveyErrors, setSurveyErrors] = useState({});
@@ -50,73 +63,86 @@ function Form() {
   const [isNext, setNext] = useState(false);
 
   useEffect(() => {
-    if(Object.keys(personalInfoErrors).length === 0 && isSubmit) {
+    if (Object.keys(personalInfoErrors).length === 0 && isSubmit) {
       setStep(2);
       fetchData();
     }
-  }, [personalInfoErrors])
+  }, [personalInfoErrors]);
 
   useEffect(() => {
-    if(Object.keys(surveyErrors).length === 0 && isNext) setStep(1);
-  },[surveyErrors])
+    if (Object.keys(surveyErrors).length === 0 && isNext) setStep(1);
+  }, [surveyErrors]);
 
   async function fetchData() {
-    await postUserData();
-    await fireJourney();
+
+    await postContactData(surveyValues, personalInfoValues);
+
+    const token = validateMarketingCloudToken(localStorage.getItem('marketingcloud-token'));
+    
+    await fireJourney(token);
   }
 
   const handleSurveyChange = (event) => {
-    const {name, value} = event.target;
-    if(name !== "findstore") setSurveyValues({...surveyValues, [name] : value});
-    setSurveyValues({...surveyValues, [name]: value});
-  }
+    const { name, value, checked } = event.target;
+    console.log(name, value, checked);
+    if (name !== "findstore") setSurveyValues({ ...surveyValues, [name]: value });
+    else setSurveyValues({ ...surveyValues, [name]: checked });
+  };
 
   const handlePersonalInfoChange = (event) => {
-    const {name, value, checked} = event.target;
-    if(name !== "subscriber") setPersonalInfoValues({...personalInfoValues, [name] : value});
-    else setPersonalInfoValues({...personalInfoValues, [name]: checked})
+    const { name, value, checked } = event.target;
+    console.log(name, value, checked);
+    if (name !== "subscriber") setPersonalInfoValues({ ...personalInfoValues, [name]: value });
+    else setPersonalInfoValues({ ...personalInfoValues, [name]: checked });
   };
 
   const handleSurveySubmit = (event) => {
     event.preventDefault();
     setSurveyErrors(validateSurvey(surveyValues));
     setNext(true);
-  }
+  };
 
   const handlePersonalInfoSubmit = (event) => {
     event.preventDefault();
     setPersonalInfoErrors(validatePersonalInfo(personalInfoValues));
     setSubmit(true);
-  }
+  };
 
   const validatePersonalInfo = (values) => {
     const errors = {};
-    const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const regex =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-    if(!values.email) errors.email = "Email is required"
-    else if(!regex.test(values.email)) errors.email = "Enter a valid email"
-    if(!values.firstname) errors.firstname = "First name is required"
-    if(!values.secondname) errors.secondname = "Second name is required"
-    if(!values.mobilenumber) errors.mobilenumber = "Mobile number is required"
-    else if(values.mobilenumber.length !== 9) errors.mobilenumber = "Enter a valid number"
+    if (!values.email) errors.email = "Email is required";
+    else if (!regex.test(values.email)) errors.email = "Enter a valid email";
+    if (!values.firstname) errors.firstname = "First name is required";
+    if (!values.secondname) errors.secondname = "Second name is required";
+    if (!values.mobilenumber) errors.mobilenumber = "Mobile number is required";
+    else if (values.mobilenumber.length !== 9)
+      errors.mobilenumber = "Enter a valid number";
 
-    return errors; 
-  }
+    return errors;
+  };
 
   const validateSurvey = (values) => {
     const errors = {};
 
-    if(!values.question) errors.question = "Answer is required!"
-    if(!values.visit) errors.visit = "Answer is required!"
-    if(values.findstore === undefined) errors.findstore = "Please select or deselect checkbox!"
+    if (!values.question) errors.question = "Answer is required!";
+    if (!values.visit) errors.visit = "Answer is required!";
+    if (values.findstore === undefined)
+      errors.findstore = "Please select or deselect checkbox!";
 
     return errors;
-  }
+  };
 
   return (
     <Card className={classes.root}>
       <CardContent>
-        <CardFormHeader title="Customer" subtitle="We want to hear you" step={step}/>
+        <CardFormHeader
+          title="Customer"
+          subtitle="We want to hear you"
+          step={step}
+        />
         <CardFormBody
           step={step}
           personalInfoValues={personalInfoValues}
@@ -126,7 +152,11 @@ function Form() {
           handleSurveyChange={handleSurveyChange}
           surveyErrors={surveyErrors}
         />
-        <CardFormFooter step={step} handlePersonalInfoSubmit={handlePersonalInfoSubmit} handleSurveySubmit={handleSurveySubmit}/>
+        <CardFormFooter
+          step={step}
+          handlePersonalInfoSubmit={handlePersonalInfoSubmit}
+          handleSurveySubmit={handleSurveySubmit}
+        />
       </CardContent>
     </Card>
   );

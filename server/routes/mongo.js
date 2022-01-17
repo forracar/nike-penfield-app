@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const authMiddleware = require("../middleware/auth");
 const contactSchema = require("../models/contact-model");
 const ContactModel = mongoose.model("ContactModel", contactSchema);
-const {generateVoucherCode} = require('../utils')
+const { generateVoucherCode } = require("../utils");
 
 module.exports = (app) => {
   app.get("/mongo/get/vouchercode", authMiddleware, (req, res) => {
@@ -20,17 +20,28 @@ module.exports = (app) => {
   app.post("/mongo/post/contactdata", authMiddleware, (req, res) => {
     // TODO: Check if contact already submit survey
     // otherwise generate code and create document in mongodb
-    const surveyData = req.params.survey;
-    const contactData = req.params.contactdata;
-    
+    console.log(req);
+    const surveyData = req.body.params.survey;
+    const contactData = req.body.params.contactdata;
+
+    console.log("Contact data: ",contactData);
+
     contactData.vouchercode = generateVoucherCode();
 
-    ContactModel.create({survey: surveyData, contact: contactData}).then((response) => {
-      console.log("[MONGO] Contact Model create documment SUCCESS: ", response);
-      res.send(response);
-    }).catch((error) => {
-      console.log("[MONGO] Contact Model ERROR at creating document: ", error);
-      res.send(error);
-    })
+    ContactModel.create({ survey: surveyData, contact: contactData })
+      .then((response) => {
+        console.log(
+          "[MONGO] Contact Model create documment SUCCESS: ",
+          response
+        );
+        res.send(response);
+      })
+      .catch((error) => {
+        console.log(
+          "[MONGO] Contact Model ERROR at creating document: ",
+          error
+        );
+        res.send(error);
+      });
   });
 };

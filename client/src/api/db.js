@@ -1,16 +1,24 @@
 import axios from 'axios';
 
-function postUserData(data) {
-  axios
-    .post("/mongo/post/userdata", data)
-    .then((response) => {
-      console.log("[API][MONGO] POST USER DATA RESPONSE: ", response);
-      return response;
-    })
-    .catch((error) => {
-      console.log("[API][MONGO] POST USER DATA ERROR: ", error);
-      return error;
-    });
+async function postContactData(surveyData, personalInfoData) {
+
+  return new Promise(() =>
+    axios
+      .post("/mongo/post/contactdata", {
+        params: {
+          survey: surveyData,
+          contactdata: personalInfoData,
+        },
+      })
+      .then((response) => {
+        console.log("[API][MONGO] POST USER DATA RESPONSE: ", response);
+        return Promise.resolve(response);
+      })
+      .catch((error) => {
+        console.log("[API][MONGO] POST USER DATA ERROR: ", error);
+        return Promise.resolve(error);
+      })
+  );
 }
 
-export { postUserData };
+export { postContactData };

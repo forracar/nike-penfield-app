@@ -1,6 +1,6 @@
-import { fireJourney } from "./marketingcloud";
-import { postUserData } from "./db";
+import { fireJourney, getMarketingCloudToken } from "./marketingcloud";
+import { postContactData } from "./db";
 
+export { fireJourney, postContactData, getMarketingCloudToken };
 
-export {fireJourney, postUserData};
 

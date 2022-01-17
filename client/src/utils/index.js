@@ -1,12 +1,14 @@
-import voucher_codes from "voucher-code-generator";
+import { getMarketingCloudToken } from "../api/marketingcloud";
 
-function generateVoucherCode() {
-  return voucher_codes.generate({
-    length: 10,
-    count: 1,
-    charset: voucher_codes.charset("alphanumeric"),
-    pattern: "##-##-##-##-##",
-  }); 
+async function validateMarketingCloudToken(token) {
+  if (!token) {
+    let token = await getMarketingCloudToken();
+    localStorage.setItem("marketingcloud-token", token);
+  } else if (token.expires_in < new Date() / 1000) {
+    let token = await getMarketingCloudToken();
+    localStorage.setItem("marketingcloud-token", token);
+  }
+  return token;
 }
 
-export { generateVoucherCode };
+export { validateMarketingCloudToken };

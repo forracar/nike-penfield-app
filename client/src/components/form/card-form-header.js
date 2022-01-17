@@ -10,10 +10,10 @@ const CardFormHeader = ({
   step = 0,
   title = "title",
   subtitle = "subtitle",
-  steps = ['Survey', 'Personal information', 'Thank you'],
+  steps = ["Survey", "Personal information", "Thank you"],
 }) => {
   return (
-      <Stack spacing={1}>
+    <Stack spacing={1}>
       <Typography variant="h4">{title}</Typography>
       <Typography variant="body1">{subtitle}</Typography>
       <Stepper activeStep={step} alternativeLabel>
@@ -23,8 +23,7 @@ const CardFormHeader = ({
           </Step>
         ))}
       </Stepper>
-      </Stack>
-
+    </Stack>
   );
 };
 

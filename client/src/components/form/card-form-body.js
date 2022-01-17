@@ -1,5 +1,14 @@
 // External imports
-import { TextField, Stack, Checkbox, FormControlLabel, Divider, Typography, FormHelperText, FormControl } from "@mui/material";
+import {
+  TextField,
+  Stack,
+  Checkbox,
+  FormControlLabel,
+  Divider,
+  Typography,
+  FormHelperText,
+  FormControl,
+} from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
 // Styles definition
@@ -8,21 +17,26 @@ const useStyles = makeStyles({
     margin: 20,
   },
   checkbox: {
-    marginRight: 'auto'
-  }
+    marginRight: "auto",
+  },
 });
 
-const FinishedForm = ({}) => {
+const ThankYouForm = ({}) => {
   const classes = useStyles();
-  return (<Stack spacing={6} className={classes.body}>
-    <Typography variant="h4"> Thanks for your time!</Typography>
-    <Typography variant="body1">You will recive an email with a voucher code with a 10% disccount!</Typography>
-  </Stack>)
-}
+  return (
+    <Stack spacing={6} className={classes.body}>
+      <Typography variant="h4"> Thanks for your time!</Typography>
+      <Typography variant="body1">
+        You will recive an email with a voucher code with a 10% disccount!
+      </Typography>
+    </Stack>
+  );
+};
 
 const PersonalInfoForm = ({
   personalInfoValues,
-  handlePersonalInfoChange = () => console.log("TODO: Handle peronsal info change"),
+  handlePersonalInfoChange = () =>
+    console.log("TODO: Handle peronsal info change"),
   errors,
 }) => {
   const classes = useStyles();
@@ -109,24 +123,25 @@ const SurveyForm = ({ handleSurveyChange, surveyValues, errors }) => {
         error={errors.visit ? true : false}
         helperText={errors.visit}
       />
-      <FormControl
-      required
-      error={errors.findstore ? true: false}
-      >
-      <FormControlLabel
-        control={
-          <Checkbox
-          className={classes.checkbox}
-            name="findstore"
-            value={surveyValues.findstore}
-            indeterminate={surveyValues.findstore === undefined ? true : false}
-            onChange={handleSurveyChange}
-          />
-        }
-        labelPlacement="start"
-        label="Did you find the store easly?*"
-      />
-      {errors.findstore ? <FormHelperText>{errors.findstore}</FormHelperText> : null}
+      <FormControl required error={errors.findstore ? true : false}>
+        <FormControlLabel
+          control={
+            <Checkbox
+              className={classes.checkbox}
+              name="findstore"
+              value={surveyValues.findstore}
+              indeterminate={
+                surveyValues.findstore === undefined ? true : false
+              }
+              onChange={handleSurveyChange}
+            />
+          }
+          labelPlacement="start"
+          label="Did you find the store easly?*"
+        />
+        {errors.findstore ? (
+          <FormHelperText>{errors.findstore}</FormHelperText>
+        ) : null}
       </FormControl>
       <Divider />
       <TextField
@@ -140,7 +155,6 @@ const SurveyForm = ({ handleSurveyChange, surveyValues, errors }) => {
     </Stack>
   );
 };
-
 
 const CardFormBody = ({
   step,
@@ -157,13 +171,14 @@ const CardFormBody = ({
       handleSurveyChange={handleSurveyChange}
       errors={surveyErrors}
     />
-  ) : (
-    step === 1 ?
+  ) : step === 1 ? (
     <PersonalInfoForm
       personalInfoValues={personalInfoValues}
       handlePersonalInfoChange={handlePersonalInfoChange}
       errors={personalInfoErrors}
-    /> : <FinishedForm></FinishedForm>
+    />
+  ) : (
+    <ThankYouForm ></ThankYouForm>
   );
 };
 

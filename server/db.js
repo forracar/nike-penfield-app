@@ -8,7 +8,10 @@ exports.connect = () => {
       console.log("Connected to mongodb");
     })
     .catch((error) => {
-      console.log("[MONGO] Unnable to connect to " + mongoConfig.uri + ": ", error);
+      console.log(
+        "[MONGO] Unnable to connect to " + mongoConfig.uri + ": ",
+        error
+      );
       process.exit(1);
     });
 };
