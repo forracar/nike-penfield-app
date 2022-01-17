@@ -1,6 +1,6 @@
 // External imports
 import React from "react";
-import { Typography, Stepper, Step, StepLabel } from "@mui/material";
+import { Typography, Stepper, Step, StepLabel, Stack } from "@mui/material";
 
 /**
  * Card form header. Allows multiple personalization to form header like; title and subtitle
@@ -10,10 +10,10 @@ const CardFormHeader = ({
   step = 0,
   title = "title",
   subtitle = "subtitle",
-  steps = ['Survey', 'Personal information'],
+  steps = ['Survey', 'Personal information', 'Thank you'],
 }) => {
   return (
-    <React.Fragment>
+      <Stack spacing={1}>
       <Typography variant="h4">{title}</Typography>
       <Typography variant="body1">{subtitle}</Typography>
       <Stepper activeStep={step} alternativeLabel>
@@ -23,7 +23,8 @@ const CardFormHeader = ({
           </Step>
         ))}
       </Stepper>
-    </React.Fragment>
+      </Stack>
+
   );
 };
 

@@ -6,11 +6,11 @@ import NikeButton from "../commons/nike-button";
  *
  */
 const CardFormFooter = ({
-  handleSurveySubmit,
-  handlePersonalInfoSubmit,
+  handleSurveySubmit = () => console.log("TODO: Survey submit"),
+  handlePersonalInfoSubmit = () => console.log("TODO: Personal info submit"),
   step = 0,
 }) => {
-  return (
+  return ( step === 2 ? null :
     <NikeButton
       text={step === 0 ? "Next" : "Submit"}
       onClick={step === 0 ? handleSurveySubmit : handlePersonalInfoSubmit}

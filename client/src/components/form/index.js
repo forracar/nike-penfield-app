@@ -7,11 +7,12 @@ import { getMarketingCloudToken } from "../../api";
 import CardFormHeader from "./card-form-header";
 import CardFormBody from "./card-form-body";
 import CardFormFooter from "./card-form-footer";
+import { postUserData, fireJourney } from "../../api";
 
 // Styles definition
 const useStyles = makeStyles({
   root: {
-    marginTop: '10px',
+    marginTop: 20,
     marginLeft: 'auto',
     marginRight: 'auto',
     border: 0,
@@ -35,7 +36,7 @@ function Form() {
 
   const [step, setStep] = useState(0);
 
-  const initialSurveyValues = {question: '', suggestions: ''};
+  const initialSurveyValues = {question: '', visit: '', findstore: undefined, suggestions: ''};
   const initialPersonalInfoValues = {email: '', firstname:'', secondname:'', mobilenumber: '', subscriber: false};
 
   const [surveyValues, setSurveyValues] = useState(initialSurveyValues);
@@ -49,11 +50,8 @@ function Form() {
 
   useEffect(() => {
     if(Object.keys(personalInfoErrors).length === 0 && isSubmit) {
-      // TODO: - Save data to database
-      // TODO: - Fire journey
-      //  1. Get token
-      //  2. Fire event
-      getMarketingCloudToken();
+      setStep(2);
+      fetchData();
     }
   }, [personalInfoErrors])
 
@@ -61,8 +59,14 @@ function Form() {
     if(Object.keys(surveyErrors).length === 0 && isNext) setStep(1);
   },[surveyErrors])
 
+  async function fetchData() {
+    await postUserData();
+    await fireJourney();
+  }
+
   const handleSurveyChange = (event) => {
     const {name, value} = event.target;
+    if(name !== "findstore") setSurveyValues({...surveyValues, [name] : value});
     setSurveyValues({...surveyValues, [name]: value});
   }
 
@@ -88,11 +92,12 @@ function Form() {
     const errors = {};
     const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-    if(!values.email) errors.email = "Email is required!"
+    if(!values.email) errors.email = "Email is required"
     else if(!regex.test(values.email)) errors.email = "Enter a valid email"
-    if(!values.firstname) errors.firstname = "First name is required!"
-    if(!values.secondname) errors.secondname = "Second name is required!"
-    if(!values.mobilenumber) errors.mobilenumber = "Mobile number is required!"
+    if(!values.firstname) errors.firstname = "First name is required"
+    if(!values.secondname) errors.secondname = "Second name is required"
+    if(!values.mobilenumber) errors.mobilenumber = "Mobile number is required"
+    else if(values.mobilenumber.length !== 9) errors.mobilenumber = "Enter a valid number"
 
     return errors; 
   }
@@ -101,6 +106,8 @@ function Form() {
     const errors = {};
 
     if(!values.question) errors.question = "Answer is required!"
+    if(!values.visit) errors.visit = "Answer is required!"
+    if(values.findstore === undefined) errors.findstore = "Please select or deselect checkbox!"
 
     return errors;
   }
