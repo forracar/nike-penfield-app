@@ -1,11 +1,11 @@
 // External imports
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
-import App from "./App";
 import { ThemeProvider } from "@mui/material/styles";
 // Internal imports
 import { theme } from "./theme";
+import "./index.css";
+import App from "./App";
 
 ReactDOM.render(
   <React.StrictMode>

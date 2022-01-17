@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import { CardContent, Card} from "@mui/material";
 import { makeStyles } from "@mui/styles";
 // Internal imports
-import {getUserData, getMarketingCloudToken} from "../../api"; 
+import { getMarketingCloudToken } from "../../api"; 
 import CardFormHeader from "./card-form-header";
 import CardFormBody from "./card-form-body";
 import CardFormFooter from "./card-form-footer";
@@ -11,7 +11,7 @@ import CardFormFooter from "./card-form-footer";
 // Styles definition
 const useStyles = makeStyles({
   root: {
-    marginTop: 20,
+    marginTop: '10px',
     marginLeft: 'auto',
     marginRight: 'auto',
     border: 0,
@@ -49,15 +49,14 @@ function Form() {
 
   useEffect(() => {
     if(Object.keys(personalInfoErrors).length === 0 && isSubmit) {
-      // TODO: - Generate voucher unic id code
-      // TODO: - Save data
-      getUserData();
+      // TODO: - Save data to database
       // TODO: - Fire journey
       //  1. Get token
       //  2. Fire event
       getMarketingCloudToken();
     }
   }, [personalInfoErrors])
+
   useEffect(() => {
     if(Object.keys(surveyErrors).length === 0 && isNext) setStep(1);
   },[surveyErrors])
