@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const authMiddleware = require("../middleware/auth");
-const contactSchema = require("../models/contactmodel");
+const contactSchema = require("../models/contact-model");
 const ContactModel = mongoose.model("ContactModel", contactSchema);
 const {generateVoucherCode} = require('../utils')
 
